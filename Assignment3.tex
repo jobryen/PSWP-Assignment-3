@@ -60,7 +60,7 @@ We want to look at the properties \keyword{i want}of the final paper left in the
 \section{Attack}
 \begin{enumerate} \keywordtwo[7pt]{specialise}
     \item Lets first consider some small cases: $H^3$, $H^4$, $H^5$ $H^6$
-    \item lets consider a Monte Carlo simulation for some $n = {10,100,1000,2026}$
+    \item lets consider a Monte Carlo simulation for some $n = {10,50,500,2026}$
     \item lets look at a heat map for $(H^n_k)_{k=1}^{k=n-1}$ where n = 2026 to try spot some paterns
     
 \end{enumerate}
@@ -100,7 +100,7 @@ We want to look at the properties \keyword{i want}of the final paper left in the
 \end{tikzpicture}
 \captionof{figure}{Distribution tree for $N=3$}
 
-\end{minipage}\hfill
+\end{minipage}\hfill\keywordtwo[-5pt]{i find}
 \begin{minipage}[t]{0.58\textwidth}
 
 For $N = 3$, we get a fairly simple tree. Since each leaf is equiprobable, we get the following:
@@ -257,7 +257,7 @@ Our Monte Carlo simulation seems to show that the probability density is mostly 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{hat1800.png}
-    \captionof{figure}{Monte Carlo for $N = 10,100,1000,2016$ with 10000 simulations}
+    \captionof{figure}{Monte Carlo for $N = 10,50,500,2026$ with 10000 simulations}
     \label{fig:placeholder}
 \end{figure}
 
@@ -398,28 +398,48 @@ I have given many reasons as \keyword{check}for why this question would be hard 
 
 I feel like i was \keyword{reflect}unable to prove much in this assingment, this may be because of its less analytical nature. Unlike the first two assignments, proving what i would call the main idea would be way out of scope for the assignment. This means I could only discuss properties of the question. Python was an excelent aid for such questions though, as the quetsion was very dependant on a lot of menial computation
 
-Throughout \keyword{generalise}the question we considered what would happen for a hat with N starting elements, so we immediately generalised the question, but an adaptation we could consider is, instead of picking two elements $(a,b)$ and taking the absolute difference; What if we just considered $a-b$? This would expand the question into allowing F to take negative values and also values greater then the largest original number, N
+Throughout \keyword{generalise}the question we considered what would happen for a hat with N starting elements, so we immediately generalised the question. An adaptation we could consider is, instead of picking two elements $(a,b)$ and taking the absolute difference; What if we just considered $a-b$? This would expand the question into allowing F to take negative values and also values greater then the largest original number, N. Since the move is linear, every entry in the hat remains an integer linear combination of the initial $\{1,2,\dots,n\}$ with coefficients in $\{\pm1\}$. so $F_n$ can be represented in the following way
+
+\begin{equation}\label{eq:signed-rep}
+X_n=\sum_{k=1}^n k\,\varepsilon_k,\qquad \varepsilon_k\in\{+1,-1\}.
+\end{equation}
+
+Each $\varepsilon_k$ is Rademacher. If we swap the subtraction order at every
+step (replace each $(a,b)$ by $(b,a)$), then every difference changes sign and therefore
+$F_n\mapsto -F_n$. Since ordered choices $(a,b)$ and $(b,a)$ are equally likely, the law of $X_n$
+is symmetric:
+\[
+\mathbb P(F_n=k)=\mathbb P(F_n=-k)\qquad(\forall k\in\mathbb Z),
+\]
+which forces
+\[
+\mathbb P(\varepsilon_k=+1)=\mathbb P(\varepsilon_k=-1)=\frac12\qquad(1\le k\le n).
+\]
+However, the signs are \emph{not independent}: the merge history couples them via global constraints
+(e.g.\ for $n=2$ one always has $(\varepsilon_1,\varepsilon_2)\in\{(+,-),(-,+)\}$, so
+$\mathbb P(\varepsilon_1=\varepsilon_2)=0$).
+
+we can see the sign vector $\varepsilon=(\varepsilon_1,\dots,\varepsilon_n)$ is exchangeable for any permutation $\pi$ of $\{1,\dots,n\}$,
+\[
+(\varepsilon_1,\dots,\varepsilon_n)\overset{d}{=}(\varepsilon_{\pi(1)},\dots,\varepsilon_{\pi(n)}),
+\]
+because the dynamics does not use the labels except as names.
 
 
 \noindent
 \begin{minipage}[t]{0.52\textwidth}
-Reassuringly this gives the same result for $N=4$. For $N=5,6$ we see $\mathbb{P}[F\text{ is even}] = 0$. Maybe we can find a way to determine whether \textbf{F must be even or odd for each N}. 
-
-In the signed hat game (each move replaces an ordered pair $(a,b)$ by $a-b$), the final value
-is always a $\{\pm1\}$--linear combination of the initial labels. Indeed, each entry in the hat
-remains a linear combination of $\{1,\dots,n\}$ under the update $u,v\mapsto u-v$, so at the end
+ why fig 6 looks Gaussian: Writing
+$P=\{k:\varepsilon_k=+1\}$ and $M=|P|$, we have
 \[
-X_n=\sum_{k=1}^n k\,\varepsilon_k,\qquad \varepsilon_k\in\{+1,-1\}.
+X_n=\sum_{k\in P}k-\sum_{k\notin P}k \;=\;2\sum_{k\in P}k-\sum_{k=1}^n k
+\;=\;2T_M-S,
 \]
-Moreover, each $\varepsilon_k$ is marginally Rademacher: swapping the subtraction order at every
-step sends $X_n\mapsto -X_n$, and since $(a,b)$ and $(b,a)$ are equally likely, the law of $X_n$ is
-symmetric, $\mathbb P(X_n=x)=\mathbb P(X_n=-x)$, which forces
-\[
-\mathbb P(\varepsilon_k=+1)=\mathbb P(\varepsilon_k=-1)=\frac12 \qquad (1\le k\le n).
-\]
-However, the signs are not independent: the merge history couples them via global constraints
-(e.g.\ for $n=2$ only $(\varepsilon_1,\varepsilon_2)=(+,-)$ or $(-,+)$ can occur). Thus the
-$\varepsilon_k$ are Rademacher but dependent.
+where $S=\sum_{k=1}^n k$ and $T_M:=\sum_{k\in P}k$. By exchangeability, conditional on $M=m$
+the set $P$ is uniform over all $m$-subsets of $\{1,\dots,n\}$, so $T_m$ is the sum of a simple
+random sample without replacement from $\{1,\dots,n\}$. Such sample sums satisfy a finite-population
+central limit theorem for $m\asymp n$, so $T_m$ (hence $X_n$) is approximately normal after centring
+and scaling. This produces the observed bell-shaped distribution, even though the underlying signs
+$\varepsilon_k$ are dependent.
 
 \captionof{figure}{Distribution of $F$ for $N = 50$, $1\times 10^6$ Trials}
 

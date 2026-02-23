@@ -252,15 +252,15 @@ We can see that the complexity of calculating each case deterministically has in
 \vspace{5pt}
 
 \noindent
-Our Monte Carlo simulation seems to show that the probability density is mostly around the smaller numbers, it\keyword{conjecture} also looks as if \textbf{The probability density function is decreasing as k increases}. It also reinforces our idea that F can only ever be even or odd.
+Our Monte Carlo simulation seems to show that the probability density is mostly around the smaller numbers, it\keyword{conjecture} also looks as if the probability density function is decreasing as k increases. It also reinforces our idea that F can only ever be even or odd, as the distribution only contains either even or odd values.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1\linewidth]{hat1800.png}
+    \includegraphics[width=1\linewidth]{hatmontecarlo.png}
     \captionof{figure}{Monte Carlo for $N = 10,50,500,2026$ with 10000 simulations}
     \label{fig:placeholder}
 \end{figure}
-
+We can see from our montecarlo that the distribution seems to be quite inverse exponential looking, i wonder if we can find a good approximation of the graph by finding suitable $a,b,c$ to fit $ae^{-bx} +c$ to our data. With small enough error this would be reliable.
 
 Looking at the \keyword{idea}number of branches in our examples, each $H^K_i$ produces $|{H^K_i}|\choose2$ non-unique children, formally:
 \[
@@ -288,7 +288,7 @@ We can also see that overall the distribution is lighter further down, but this 
 
 
 
-\begin{claim}For each n, F can only take either positive or negative values
+\begin{claim}For each n, F can only take either even or odd values
 
 \end{claim}
 
@@ -313,12 +313,18 @@ At the end, a single number $F$ remains, so $S=F$ at termination. Thus
 \[
 F \equiv S \equiv \sum_{k=1}^n k = \frac{n(n+1)}{2}\pmod 2,
 \]
-as required. Since
+as required. 
+\end{proof}
+
+Since
 \[
 \quad\frac{2026(2026+1)}{2} = 1 \pmod{2},\quad \text{$F$ will always be odd}
 \]
-\end{proof}
 
+\begin{claim}
+    Once the largest number leaves the hat, it can no longer be readded
+\end{claim}
+    
 \begin{proof}
 Let $H_t$ be the multiset of values in the hat after $t$ merges, and write
 \[
@@ -340,50 +346,52 @@ Thus no later hat $H_s$ can contain $M_t$, so once the maximum disappears it can
     
 
 
-\begin{claim}For probable values of k, the probability density function is decreasing as k increases
+\begin{claim}We can approximate $\mathbb{P}(F < K)$ using an exponential approximation:
+
+
 \end{claim}
-whilst i am almost certain this is true, i could find no way of proving it. 
-\begin{claim}There are $\sim 4\pi\left(\frac{(n-1)^2}{2e^2}\right)^{n-1}$ ways of finding $\mathbb{P}(F = k)$
+whilst i am almost certain this is true, i could find no way of proving it. By direct computation i have shown it true up to n = 14
+\begin{claim}There are $\sim4\pi\left(\frac{n^2}{2e^2}\right)^{n}$ move sequences, $\mathbb{P}(F = k)$
 
 
 \end{claim}
 Consider a string $H^n$, then $|f(H^n)| = {n\choose2}$ eg there are $\frac{n(n-1)}{2}$ different ways of creating a child string from it. Since we have to apply $f$ n-1 times to find the final value, F. This means there are 
 \[
-P(n)\;:=\prod^{n-1}_{i=2}{n\choose2} = \prod^{n-1}_{i=2}\frac{n(n-1)}{2} = \frac{(n-1)!(n-2)!}{2^{n-2}}
+P(n)\;:=\prod^{n}_{k=2}{k\choose2} = \prod^{n}_{k=2}\frac{k(k-1)}{2} = \frac{1}{2^{n-1}}\prod^{n}_{k=2}k\prod^{n}_{k=2}(k-1) =\frac{n!(n-1)!}{2^{n-1}}
 \] 
 different ways of finding our final value F. Lets use Stirling formula with remainder: for every integer $m\ge 1$ there exists $\theta_m\in(0,1)$ such that
 \[
 m!\;=\;\sqrt{2\pi m}\left(\frac{m}{e}\right)^m
 \exp\!\left(\frac{\theta_m}{12m}\right).
 \]
-Apply this to $m=n-1$ and $m=n-2$:
+Apply this formula with $m=n$ and for $m=n-1$:
 \[
 P(n)
-=\frac{1}{2^{n-2}}\sqrt{2\pi (n-1)}\left(\frac{n-1}{e}\right)^{n-1}
-\sqrt{2\pi(n-2)}\left(\frac{n-2}{e}\right)^{n-2}
-\exp\!\left(\frac{\theta_{n-1}}{12(n-1)}+\frac{\theta_{n-2}}{12(n-2)}\right).
+=\frac{1}{2^{n-1}}\sqrt{2\pi n}\left(\frac{n}{e}\right)^{n}
+\sqrt{2\pi n}\left(\frac{n-1}{e}\right)^{n-1}
+\exp\!\left(\frac{\theta_{n}}{12n}+\frac{\theta_{n-1}}{12(n-1)}\right).
 \]
 Rearrange:
 \[
 P(n)
-=(2\pi)\,\frac{\sqrt{(n-1)(n-2)}}{2^{n-2}}\,
-\frac{(n-1)^{n-1}(n-2)^{n-2}}{e^{2n-3}}\,
-\exp\!\left(\frac{\theta_{n-1}}{12(n-1)}+\frac{\theta_{n-2}}{12(n-2)}\right).
+=(2\pi)\,\frac{\sqrt{n(n-1)}}{2^{n-1}}\,
+\frac{n^{n}(n-1)^{n-1}}{e^{2n-1}}\,
+\exp\!\left(\frac{\theta_{n}}{12n}+\frac{\theta_{n}}{12(n-1)}\right).
 \]
 Equivalently,
 \[
 P(n)
-=4\pi\left(\frac{(n-1)^2}{2e^2}\right)^{n-1}\,R_n,\quad
+=4\pi\left(\frac{n^2}{2e^2}\right)^{n}\,R_n,\quad
 R_n
 :=e\,
-\left(1-\frac{1}{n-1}\right)^{n-{3/2}}
-\exp\!\left(\frac{\theta_{n-1}}{12(n-1)}+\frac{\theta_{n-2}}{12(n-2)}\right).
+\left(1-\frac{1}{n}\right)^{n-{1/2}}
+\exp\!\left(\frac{\theta_{n}}{12n}+\frac{\theta_{n-1}}{12(n-1)}\right).
 \]
-As $n\to\infty$, we have $\widetilde R_n\to 1$, hence
+As $n\to\infty$, we have $R_n\to 1$, hence
 \[
-P(n)\sim 4\pi\left(\frac{(n-1)^2}{2e^2}\right)^{n-1}.
+P(n)\sim 4\pi\left(\frac{n^2}{2e^2}\right)^{n}.
 \]
-A strong dependence on the previous move means we cannot take any shortcuts, making this incredibly difficult to calculate, with this difficulty increasing super exponentially as n increases.
+Many of these different sets calculated will be identical but found with different choices of (a,b), but a strong dependence on the previous move means we cannot take any shortcuts, making this incredibly difficult to calculate, with this difficulty increasing super exponentially as n increases.
 
 
 
@@ -394,14 +402,14 @@ A strong dependence on the previous move means we cannot take any shortcuts, mak
 
 
 \section{Review}
-I have given many reasons as \keyword{check}for why this question would be hard to solve, and what makes properties of F so elusive, as other then the trivial properties of F, eg its a non zero integer between 0 and 2026. I didnt manage to show much.
+I have given many reasons as \keyword{check}for why this question would be hard to solve, demonstrating why properties of F are so elusive, as other then the trivial properties of F, eg its a non zero integer between 0 and 2026, its hard to show much more concusivly
 
-I feel like i was \keyword{reflect}unable to prove much in this assingment, this may be because of its less analytical nature. Unlike the first two assignments, proving what i would call the main idea would be way out of scope for the assignment. This means I could only discuss properties of the question. Python was an excelent aid for such questions though, as the quetsion was very dependant on a lot of menial computation
+This was a far less analytical assignment then the first two, with large amounts of computation required instead of elegant proofs. This is where python was exceptionally useful as for anything above N = 4, it would be unreasonable to do any sort of calculations by hand. My attack for the question was mainly to find interesting ways of representing the question through python.
 
 Throughout \keyword{generalise}the question we considered what would happen for a hat with N starting elements, so we immediately generalised the question. An adaptation we could consider is, instead of picking two elements $(a,b)$ and taking the absolute difference; What if we just considered $a-b$? This would expand the question into allowing F to take negative values and also values greater then the largest original number, N. Since the move is linear, every entry in the hat remains an integer linear combination of the initial $\{1,2,\dots,n\}$ with coefficients in $\{\pm1\}$. so $F_n$ can be represented in the following way
 
 \begin{equation}\label{eq:signed-rep}
-X_n=\sum_{k=1}^n k\,\varepsilon_k,\qquad \varepsilon_k\in\{+1,-1\}.
+F_n=\sum_{k=1}^n k\,\varepsilon_k,\qquad \varepsilon_k\in\{+1,-1\}.
 \end{equation}
 
 Each $\varepsilon_k$ is Rademacher: If we swap the subtraction order at every
@@ -419,43 +427,32 @@ However, the signs are \emph{not independent}: the merge history couples them.
 (e.g.\ for $n=2$ one always has $(\varepsilon_1,\varepsilon_2)\in\{(+,-),(-,+)\}$, so
 $\mathbb P(\varepsilon_1=\varepsilon_2)=0$).
 
-we can see the sign vector $\varepsilon=(\varepsilon_1,\dots,\varepsilon_n)$ is exchangeable for any permutation $\pi$ of $\{1,\dots,n\}$,
-\[
-(\varepsilon_1,\dots,\varepsilon_n)\overset{d}{=}(\varepsilon_{\pi(1)},\dots,\varepsilon_{\pi(n)}),
-\]
-because the dynamics does not use the labels except as names.
-
-
 \noindent
 \begin{minipage}[t]{0.52\textwidth}
- why fig 6 looks Gaussian: Writing
+Why does fig 6 looks Gaussian? Writing
 $P=\{k:\varepsilon_k=+1\}$ and $M=|P|$, we have
 \[
-X_n=\sum_{k\in P}k-\sum_{k\notin P}k \;=\;2\sum_{k\in P}k-\sum_{k=1}^n k
+F_n=\sum_{k\in P}k-\sum_{k\notin P}k \;=\;2\sum_{k\in P}k-\sum_{k=1}^n k
 \;=\;2T_M-S,
 \]
-where $S=\sum_{k=1}^n k$ and $T_M:=\sum_{k\in P}k$. By exchangeability, conditional on $M=m$
-the set $P$ is uniform over all $m$-subsets of $\{1,\dots,n\}$, so $T_m$ is the sum of a simple
-random sample without replacement from $\{1,\dots,n\}$. Such sample sums satisfy a finite-population
-central limit theorem for $m\asymp n$, so $T_m$ (hence $X_n$) is approximately normal after centring
-and scaling. This produces the observed bell-shaped distribution, even though the underlying signs
-$\varepsilon_k$ are dependent.
-
-\captionof{figure}{Distribution of $F$ for $N = 50$, $1\times 10^6$ Trials}
+where $S=\sum_{k=1}^n k$ and $T_M:=\sum_{k\in P}k$. By exchangeability, conditional on $M=m$, $P$ is uniform over all $m$-subsets of $\{1,\dots,n\}$, so $T_m$ is the sum of a simple
+random sample without replacement from $\{1,\dots,n\}$. Such sample sums satisfy the finite-population central limit theorem for $m\asymp n$, so $T_m$ (hence $F_n$) is approximately normal. This produces the observed bell-shaped distribution, even though $\varepsilon_k$ are dependent.
 
 \end{minipage}\hfill
 \begin{minipage}[t]{0.45\textwidth}
 \vspace{0pt}
 \centering
 \includegraphics[width=\linewidth]{extension.png}
-
+\captionof{figure}{Distribution of $F_{50}$, $1\times 10^6$ Trials}
 \end{minipage}
 \vspace{5pt}
+
+We can see that simply introducing linearity into our move for  picking values makes the question far easier to tackle
 
 \section*{Code}
 The code for this assignment can be found on my GitHub page:\\  
 \url{https://github.com/siriwarwick/book/tree/main/Chapter4}
 
-In particular, \texttt{mandelbrot.ipynb} was used to plot fig. 1.
+In particular, \texttt{hat.ipynb} was used to plot figures 3,4,5 and 6 as well as for the calculations in Claim 3. Figures 1 and 2 were plotted with Tikz.
 
 \end{document}

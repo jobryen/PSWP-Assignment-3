@@ -111,7 +111,7 @@ We can use this same idea for $N=4$ with Figure 2 seen below, remembering to acc
 \[
 \mathbb{P}[F= 0] = \mathbb{P}[F = 2] = 4/9,\quad \mathbb{P}[F = 4] = 1/9.
 \]
-Interestingly for $N = 3,4$, we see that $\mathbb{P}[F\text{ is odd}] = 0$, lets see if this pattern continues for larger $N$. further calculations will rely on python for this as its too complicated to be done by hand
+Interestingly for $N = 3,4$, we see that $\mathbb{P}[F\text{ is odd}] = 0$, lets see if this pattern continues for larger $N$. Further calculations will rely on python for this as its too complicated to be done by hand
 \end{minipage}
 
 \begin{center}
@@ -235,7 +235,7 @@ Interestingly for $N = 3,4$, we see that $\mathbb{P}[F\text{ is odd}] = 0$, lets
 \captionof{figure}{Distribution tree for $N=4$}
 \end{center}
 \keywordtwo[32pt]{conjecture}
-\keywordtwo[16pt]{issue}
+\keywordtwo[16pt]{stuck}
 \noindent
 \begin{minipage}[t]{0.52\textwidth}
 Reassuringly this gives the same result for $N=4$. For $N=5,6$ we see $\mathbb{P}[F\text{ is even}] = 0$. Maybe we can find a way to determine whether \textbf{F must be even or odd for each N}. 
@@ -264,9 +264,9 @@ Our Monte Carlo simulation seems to show that the probability density is mostly 
 
 Looking at the \keyword{idea}number of branches in our examples, each $H^K_i$ produces $|{H^K_i}|\choose2$ non-unique children, formally:
 \[
-|f(H)| = {|H|\choose2} \quad \text{This could be useful to calculate }  |\mathbb{H}^n_k|\]
+|f(H)| = {|H|\choose2} \quad \text{This could be useful to calculate }  |\mathbb{H}^n_k|\]\keyword{conjecture}
 \[
-\text{ which may explain \textbf{Why }}\mathbb{P}(F = k) \textbf{ is so hard to calculate}
+\text{ which may explain \textbf{Why }}\mathbb{P}(F = k) \textbf{ is so hard to calculate} 
 \]
 
 \noindent
@@ -274,13 +274,13 @@ Looking at the \keyword{idea}number of branches in our examples, each $H^K_i$ pr
 \vspace{0pt}
 \centering
 \includegraphics[width=\linewidth]{heatmap.png}
-\end{minipage}
-\begin{minipage}[h]{0.75\textwidth}
+\end{minipage}\keywordtwo[-25pt]{conjecture}
+\begin{minipage}[h]{0.65\textwidth}
 
 I think this provides some solid insight. We can see that larger numbers seem to leave the hat sooner on average This may be because \textbf{Once the largest value leaves the hat it can no longer be re-added}. This will certainly contribute towards larger numbers being less probable. 
 We can also see that overall the distribution is lighter further down, but this is obvious because the number of elements in the hat is reduced.
 
-\captionof{figure}{Heat map of how $H^{2026}$ changes over $f$, 5000 simulations}
+\captionof{figure}{Heat map of how $H^{2026}$ changes over $f$, 5000 trials}
 
 \end{minipage}
 
@@ -324,9 +324,9 @@ Let $H_t$ be the multiset of values in the hat after $t$ merges, and write
 \[
 M_t:=\max(H_t).
 \]
-A merge replaces $a,b\in H_t$ by $c=\lvert a-b\rvert$, so
 \[
-\lvert a-b\rvert \le \max\{a,b\}\le M_t,
+\text{A move replaces } a,b\in H_t \text{ by } c=\lvert a-b\rvert, \text{ so }
+\lvert a-b\rvert \le \max\{a,b\}\le M_t.
 \]
 hence every element of $H_{t+1}$ is $\le M_t$ and therefore $M_{t+1}\le M_t$.
 
@@ -405,14 +405,30 @@ Throughout \keyword{generalise}the question we considered what would happen for 
 \begin{minipage}[t]{0.52\textwidth}
 Reassuringly this gives the same result for $N=4$. For $N=5,6$ we see $\mathbb{P}[F\text{ is even}] = 0$. Maybe we can find a way to determine whether \textbf{F must be even or odd for each N}. 
 
-We can see that the complexity of calculating each case deterministically has increased massively, this is reflected in the runtime of my code. This will be problematic when trying to find larger values of n, especially 2026 even with the aid of python. Lets try a Monte carlo approximation.
+In the signed hat game (each move replaces an ordered pair $(a,b)$ by $a-b$), the final value
+is always a $\{\pm1\}$--linear combination of the initial labels. Indeed, each entry in the hat
+remains a linear combination of $\{1,\dots,n\}$ under the update $u,v\mapsto u-v$, so at the end
+\[
+X_n=\sum_{k=1}^n k\,\varepsilon_k,\qquad \varepsilon_k\in\{+1,-1\}.
+\]
+Moreover, each $\varepsilon_k$ is marginally Rademacher: swapping the subtraction order at every
+step sends $X_n\mapsto -X_n$, and since $(a,b)$ and $(b,a)$ are equally likely, the law of $X_n$ is
+symmetric, $\mathbb P(X_n=x)=\mathbb P(X_n=-x)$, which forces
+\[
+\mathbb P(\varepsilon_k=+1)=\mathbb P(\varepsilon_k=-1)=\frac12 \qquad (1\le k\le n).
+\]
+However, the signs are not independent: the merge history couples them via global constraints
+(e.g.\ for $n=2$ only $(\varepsilon_1,\varepsilon_2)=(+,-)$ or $(-,+)$ can occur). Thus the
+$\varepsilon_k$ are Rademacher but dependent.
+
+\captionof{figure}{Distribution of $F$ for $N = 50$, $1\times 10^6$ Trials}
 
 \end{minipage}\hfill
 \begin{minipage}[t]{0.45\textwidth}
 \vspace{0pt}
 \centering
 \includegraphics[width=\linewidth]{extension.png}
-\captionof{figure}{Distribution of $F$ for $N = 4,5,6$}
+
 \end{minipage}
 \vspace{5pt}
 
